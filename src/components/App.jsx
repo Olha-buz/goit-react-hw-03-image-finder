@@ -9,7 +9,7 @@ import Modal from "./Modal/Modal";
 import Notiflix from "notiflix";
 import { Button } from "./Button/Button";
 
-export class App extends Component {
+class App extends Component {
   state = {
     hits: [],
     name: '',
@@ -93,3 +93,5 @@ export class App extends Component {
   }
 
 };
+
+export default App;
