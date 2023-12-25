@@ -1,8 +1,9 @@
+import css from './Buttom.module.css';
 
-
-export const Button = ({ onClick }) => {
+export default function Button({ onClick }) {
     return (
         <Button
+            className={css.button}
             type="button"
             onClick={onClick} >
             Load More

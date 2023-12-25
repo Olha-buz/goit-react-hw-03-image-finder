@@ -1,0 +1,27 @@
+.headerSearch {
+     height: 48px;
+     border: 1px solid #000;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+}
+
+.formSearch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btnSearch{
+    height: 32px;
+    border-radius: 4px;
+    border: none;
+    background-color: #92BBEC;
+    margin-left: 12px;
+}
+
+.inputSearch{
+    height: 28px;
+    border-radius: 4px;
+    border: 1px solid #92BBEC;
+}

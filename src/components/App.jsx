@@ -1,13 +1,12 @@
-import { apiKEY, baseURL, params } from "api/api";
+import imagesAPI from "../api/api";
 import { Component } from "react"
 import { Loader } from "./Loader/Loader";
-import axios from "axios";
 import SearchBar from "./SearchBar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import ImageGalleryItem from "./ImageGallery/ImageGalleryItem";
 import Modal from "./Modal/Modal";
 import Notiflix from "notiflix";
-import { Button } from "./Button/Button";
+import Button from "./Button/Button";
 
 class App extends Component {
   state = {
@@ -20,7 +19,41 @@ class App extends Component {
     tags: ''
   }
 
-  
+  componentDidUpdate(prevProps, prevState) {
+    const { name, page } = this.state;
+    
+    if (prevState.name !== name) {
+      this.setState({ isLoading: true, page: 1 });
+      imagesAPI(name)
+        .then(images => {
+          this.setState({
+            hits: images,
+            isLoading: false,
+          })
+        })
+        .catch(error => {
+          console.error(error.message);
+        });    
+    };
+
+    if (prevState.page !== page) {
+      this.setState({ isLoading: true });
+      imagesAPI(name, page) 
+        .then(images => {
+          this.setState(prevState => ({
+            hits: [...prevState.hits, ...images],
+            isLoading: false,
+          }))
+            .catch(error => {
+              console.error(error.massage);
+              Notiflix.Notify.failure('Images no found');
+          })
+      })
+    };
+
+  };
+
+
   toggleModal = (imageUrl, tag, id) => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
@@ -29,48 +62,59 @@ class App extends Component {
     }))
   };
 
-  getImages = ({name, page}) => {
-    this.setState({ isLoading: true });
-    try {
-      axios
-        .get(`${baseURL}?key=${apiKEY}&q=${name}&page=${page}&${params}`)
-        .then(response => {
-          if (!response.data.hits.length) {
-            Notiflix.Notify.failure('Images no found');
-          } else if (name === this.state.name) {
-            this.setState(state => ({
-              hits: [...state.hits, ...response.data.hits],
-              name: name,
-              page: state.page + 1,
-            }))
-          } else {
-            this.setState(state => ({
-              hits: response.data.hits,
-              name: name,
-              page: state.page + 1,
-            }))
-          }
+  changePage = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
 
-        });
+  handleSearchbarFormSubmit = name => {
+    this.setState({ name });
+  };
+  
+  // getImages = ({name, page}) => {
+  //   this.setState({ isLoading: true });
+  //   try {
+  //     axios
+  //       .get(`${baseURL}?key=${apiKEY}&q=${name}&page=${page}&${params}`)
+  //       .then(response => {
+  //         if (!response.data.hits.length) {
+  //           Notiflix.Notify.failure('Images no found');
+  //         } else if (name === this.state.name) {
+  //           this.setState(state => ({
+  //             hits: [...state.hits, ...response.data.hits],
+  //             name: name,
+  //             page: state.page + 1,
+  //           }))
+  //         } else {
+  //           this.setState(state => ({
+  //             hits: response.data.hits,
+  //             name: name,
+  //             page: state.page + 1,
+  //           }))
+  //         }
+
+  //       });
         
       
-    } catch (error) {
-      console.error(error.message);
-    } finally {
-      this.setState({ isLoading: false });
-    }
+  //   } catch (error) {
+  //     console.error(error.message);
+  //   } finally {
+  //     this.setState({ isLoading: false });
+  //   }
     
-  }
+  // }
 
-  loadMore = () => {
-    this.getImages(this.state);
-  }
+  // loadMore = () => {
+  //   this.getImages(this.state);
+  // }
 
   render() {
     const { hits, isLoading, showModal, largeImageURL, tags } = this.state;
+    console.log(hits);
     return (
       <>
-        <SearchBar onSubmitHandler={this.getImages} />
+        <SearchBar onSubmitHandler={this.handleSearchbarFormSubmit} />
         
         {isLoading && <Loader />}
 
@@ -78,7 +122,6 @@ class App extends Component {
           <Modal onClose={this.toggleModal} url={largeImageURL} alt={tags} />
         )}
 
-        
         {hits && (
           <ImageGallery>
              <ImageGalleryItem articles={hits} onImage={this.toggleModal}/>
@@ -86,8 +129,10 @@ class App extends Component {
         )}
 
         {hits.lenth > 0 && (
-          <Button onClick={() => this.loadMore()} />
+          <Button onClick={() => this.changePage} />
         )}
+
+
       </>
     )
   }
