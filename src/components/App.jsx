@@ -1,4 +1,4 @@
-import imagesAPI from "../api/api";
+import {imagesAPI} from "../api/api";
 import { Component } from "react"
 import { Loader } from "./Loader/Loader";
 import SearchBar from "./SearchBar/Searchbar";
@@ -6,53 +6,21 @@ import ImageGallery from "./ImageGallery/ImageGallery";
 import ImageGalleryItem from "./ImageGallery/ImageGalleryItem";
 import Modal from "./Modal/Modal";
 import Notiflix from "notiflix";
-import Button from "./Button/Button";
+import { Button } from "./Button/Button";
+
 
 class App extends Component {
   state = {
     hits: [],
     name: '',
     page: 1,
+    total: 0,
     showModal: false,
     isLoading: false,
     largeImageURL: '',
-    tags: ''
+    tags: '', 
+    visibleButton: false,
   }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { name, page } = this.state;
-    
-    if (prevState.name !== name) {
-      this.setState({ isLoading: true, page: 1 });
-      imagesAPI(name)
-        .then(images => {
-          this.setState({
-            hits: images,
-            isLoading: false,
-          })
-        })
-        .catch(error => {
-          console.error(error.message);
-        });    
-    };
-
-    if (prevState.page !== page) {
-      this.setState({ isLoading: true });
-      imagesAPI(name, page) 
-        .then(images => {
-          this.setState(prevState => ({
-            hits: [...prevState.hits, ...images],
-            isLoading: false,
-          }))
-            .catch(error => {
-              console.error(error.massage);
-              Notiflix.Notify.failure('Images no found');
-          })
-      })
-    };
-
-  };
-
 
   toggleModal = (imageUrl, tag, id) => {
     this.setState(({ showModal }) => ({
@@ -62,7 +30,7 @@ class App extends Component {
     }))
   };
 
-  changePage = () => {
+  handleButton = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
@@ -72,46 +40,60 @@ class App extends Component {
     this.setState({ name });
   };
   
-  // getImages = ({name, page}) => {
-  //   this.setState({ isLoading: true });
-  //   try {
-  //     axios
-  //       .get(`${baseURL}?key=${apiKEY}&q=${name}&page=${page}&${params}`)
-  //       .then(response => {
-  //         if (!response.data.hits.length) {
-  //           Notiflix.Notify.failure('Images no found');
-  //         } else if (name === this.state.name) {
-  //           this.setState(state => ({
-  //             hits: [...state.hits, ...response.data.hits],
-  //             name: name,
-  //             page: state.page + 1,
-  //           }))
-  //         } else {
-  //           this.setState(state => ({
-  //             hits: response.data.hits,
-  //             name: name,
-  //             page: state.page + 1,
-  //           }))
-  //         }
+  handleVisibleButton = () => {
+    const { total, hits } = this.state;
+    if (hits.length > 0 && total > 12) {
+      this.setState({ visibleButton: true })
+    }
+  };
 
-  //       });
-        
-      
-  //   } catch (error) {
-  //     console.error(error.message);
-  //   } finally {
-  //     this.setState({ isLoading: false });
-  //   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { name, page } = this.state;
     
-  // }
+    if (prevState.name !== name) {
+      this.setState({ isLoading: true, page: 1 });
+      imagesAPI(name)
+        .then(({ hits, total }) => {
+          this.setState({
+            hits: hits,
+            isLoading: false,
+            total: total,
+          })
+        })
+        .catch((error) => {
+          console.error(error.message);
+        });
+    };
 
-  // loadMore = () => {
-  //   this.getImages(this.state);
-  // }
+    if (prevState.page !== page) {
+      this.setState({ isLoading: true });
+      imagesAPI(name, page)
+        .then(({hits, total}) => {
+          this.setState(prevState => ({
+            hits: [...prevState.hits, ...hits],
+            isLoading: false,
+            total: total,
+            visibleButton: true,
+          }))
+          .catch((error) => {
+              console.error(error.message);
+              Notiflix.Notify.failure('Images no found');
+            })
+        })
+    };
+
+    
+
+  };
 
   render() {
-    const { hits, isLoading, showModal, largeImageURL, tags } = this.state;
-    console.log(hits);
+    const { hits, isLoading, showModal, largeImageURL, tags, visibleButton } = this.state;
+
+    // const hitsArr = Array.isArray(hits) ? hits : [];
+    // const loadMore = hitsArr.length > 0 && total > hitsArr.length;
+
+
     return (
       <>
         <SearchBar onSubmitHandler={this.handleSearchbarFormSubmit} />
@@ -123,20 +105,22 @@ class App extends Component {
         )}
 
         {hits && (
-          <ImageGallery>
-             <ImageGalleryItem articles={hits} onImage={this.toggleModal}/>
-          </ImageGallery>
+          <>
+            <ImageGallery>
+              <ImageGalleryItem articles={hits} onImage={this.toggleModal} />
+            </ImageGallery>
+
+          </>
         )}
 
-        {hits.lenth > 0 && (
-          <Button onClick={() => this.changePage} />
-        )}
-
+        {visibleButton && <Button onClick={this.handleButton} isVisible={visibleButton} />}
 
       </>
     )
   }
 
 };
+
+
 
 export default App;

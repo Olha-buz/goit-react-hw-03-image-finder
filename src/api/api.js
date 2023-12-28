@@ -8,27 +8,24 @@
 //     per_page: 12,
 // });
 import axios from 'axios';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 const baseURL = 'https://pixabay.com/api/';
 const apiKEY = '40392012-08915947b5d4aadebea93b87b';
-
-async function imagesAPI(name, page) {
-    const params = new URLSearchParams({
+const params = new URLSearchParams({
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: 'true',
-        page: page,
+        per_page: 12
     });
-    return await axios.get(`${baseURL}?key=${apiKEY}&q=${name}&page=${page}&${params}`)
-        .then(response => {
-        return response.data.hits;
-    });
+    
+export const imagesAPI = async (name, page=1) => {
+    try {
+        const { data } = await axios.get(`${baseURL}?key=${apiKEY}&q=${name}&page=${page}&${params}`);
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error(error.message);
+    }
 };
 
-imagesAPI.prorTypes = {
-    name: PropTypes.string,
-    page: PropTypes.number,
-};
-
-export default imagesAPI;
