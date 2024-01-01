@@ -74,7 +74,6 @@ class App extends Component {
             hits: [...prevState.hits, ...hits],
             isLoading: false,
             total: total,
-            visibleButton: true,
           }))
           .catch((error) => {
               console.error(error.message);
@@ -88,10 +87,10 @@ class App extends Component {
   };
 
   render() {
-    const { hits, isLoading, showModal, largeImageURL, tags, visibleButton } = this.state;
+    const { hits, isLoading, showModal, largeImageURL, tags, total } = this.state;
 
-    // const hitsArr = Array.isArray(hits) ? hits : [];
-    // const loadMore = hitsArr.length > 0 && total > hitsArr.length;
+    const hitsArr = Array.isArray(hits) ? hits : [];
+    const loadMore = hitsArr.length > 0 && total > hitsArr.length;
 
 
     return (
@@ -113,7 +112,7 @@ class App extends Component {
           </>
         )}
 
-        {visibleButton && <Button onClick={this.handleButton} isVisible={visibleButton} />}
+        {!isLoading && <Button onClick={this.handleButton} isVisible={loadMore} />}
 
       </>
     )
