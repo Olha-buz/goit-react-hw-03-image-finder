@@ -2,11 +2,10 @@ import {imagesAPI} from "../api/api";
 import { Component } from "react"
 import { Loader } from "./Loader/Loader";
 import SearchBar from "./SearchBar/Searchbar";
-import ImageGallery from "./ImageGallery/ImageGallery";
-
 import Modal from "./Modal/Modal";
 import Notiflix from "notiflix";
 import { Button } from "./Button/Button";
+import { ImageGallery } from "./ImageGallery/ImageGallery";
 
 
 class App extends Component {
@@ -22,7 +21,7 @@ class App extends Component {
     visibleButton: false,
   }
 
-  toggleModal = (imageUrl, tag, id) => {
+  toggleModal = (imageUrl, tag) => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
       largeImageURL: imageUrl,
@@ -109,7 +108,7 @@ class App extends Component {
           </>
         )}
 
-        { <Button onClick={this.handleButton} isVisible={visibleButton} />}
+        {!isLoading && <Button onClick={this.handleButton} isVisible={visibleButton} />}
 
       </>
     )

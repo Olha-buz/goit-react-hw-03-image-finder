@@ -1,26 +1,17 @@
-import { Component } from 'react';
+import PropTypes from 'prop-types';
 import css from './ImageGallery.module.css'
 import { ImageGalleryItem } from 'components/imageGalleryItem/ImageGalleryItem';
 
-export default class ImageGallery extends Component {
-    handleOpen = (largeImageURL) => {
-        this.props.onImageClick(largeImageURL);
-    }
 
-    render() {
-        const { images } = this.props;
-        return (
-            <ul className={css.gallery}>
-                {images.map((image) => (
-                    <ImageGalleryItem
-                        key={image.id}
-                        webformatUrl={image.webformatURL}
-                        largeImageUrl={image.largeImageURL}
-                        onImageClick={this.handleOpen}
-                    />
-                ))}
-            </ul>
-        )
-    }
+export const ImageGallery = ({ images, onImageClick }) => {
+    return (
+        <ul className={css.gallery}>
+            <ImageGalleryItem images={images} onImage={onImageClick} />
+        </ul>
+    )
 };
 
+ImageGallery.propTypes = {
+    images: PropTypes.array,
+    onImageClick: PropTypes.func,
+};
