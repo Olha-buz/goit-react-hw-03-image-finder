@@ -38,13 +38,6 @@ class App extends Component {
   handleSearchbarFormSubmit = name => {
     this.setState({ name, page:1, hits: [] });
   };
-  
-  // handleVisibleButton = () => {
-  //   const { total, hits } = this.state;
-  //   if (hits.length > 0 && total > 12) {
-  //     this.setState({ visibleButton: true })
-  //   }
-  // };
 
 
   componentDidUpdate(prevProps, prevState) {
@@ -68,22 +61,6 @@ class App extends Component {
           Notiflix.Notify.failure('Images no found');
         });
     };
-
-    // if  {
-    //   this.setState({ isLoading: true });
-    //   imagesAPI(name, page)
-    //     .then(({hits, total}) => {
-    //       this.setState(prevState => ({
-    //         hits: [...prevState.hits, ...hits],
-    //         isLoading: false,
-    //         total: total,
-    //       }))
-    //       .catch((error) => {
-    //           console.error(error.message);
-    //           Notiflix.Notify.failure('Images no found');
-    //         })
-    //     })
-    // };
 
     
 

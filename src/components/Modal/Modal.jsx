@@ -44,5 +44,5 @@ export default Modal;
 Modal.propTypes = {
     url: PropTypes.string,
     alt: PropTypes.string,
-    handleBackdropClick: PropTypes.func,
+    onClose: PropTypes.func,
 }
