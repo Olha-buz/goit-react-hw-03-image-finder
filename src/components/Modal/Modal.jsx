@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import css from './Modal.modaule.css';
 const { Component } = require("react");
 
 
@@ -26,23 +26,17 @@ class Modal extends Component {
     render() {
         const { url, alt } = this.props;
         return (
-            <div className='overlay' onClick={this.handleBackdropClick}>
-                <div className='modal'>
-                    <img src={url} alt={alt} />
-                    <button className='btnClose' onClick={this.handleBackdropClick}>
+            <div className={css.overlay} onClick={this.handleBackdropClick}>
+                <div className={css.modal}>
+                    <img className={css.imgmodal} src={url} alt={alt} onClick={this.handleBackdropClick}/>
+                    <button className={css.btnClose} onClick={this.handleBackdropClick}>
                         X
                     </button>
                 </div>
-            </div>
-            
-        )
+            </div>            
+        );
     }
 }
 
 export default Modal;
  
-Modal.propTypes = {
-    url: PropTypes.string,
-    alt: PropTypes.string,
-    onClose: PropTypes.func,
-}

@@ -21,7 +21,7 @@ class App extends Component {
     visibleButton: false,
   }
 
-  toggleModal = (imageUrl, tag) => {
+ toggleModal = (imageUrl, tag) => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
       largeImageURL: imageUrl,
