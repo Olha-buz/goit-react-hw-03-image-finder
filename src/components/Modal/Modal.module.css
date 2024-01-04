@@ -20,13 +20,3 @@
     height: 100%;
 }
 
-.btnClose {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
-    border: none;
-    position: fixed;
-    top: 0;
-    right: 0;
-    transform: translate(-35%, 35%)
-}
