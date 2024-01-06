@@ -14,7 +14,7 @@ class Modal extends Component {
     }
 
     handleKeyDown = evt => {
-        if (evt.currentTarget === 'Escape') {
+        if (evt.code === 'Escape') {
             this.props.onClose();
         }
     }
